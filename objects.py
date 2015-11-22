@@ -16,7 +16,16 @@ class ClickButton(Widget):
 		super(ClickButton, self).__init__(**kwargs)
 		with self.canvas:
 			Rectangle(size=(50, 50))
+			self.bind(pos=self.update_canvas)
+			self.bind(size=self.update_canvas)
+		self.update_canvas()
+
+	def update_canvas(self):
+		self.canvas.clear()
+		with self.canvas:
+			Rectangle(pos=self.pos, size=self.size)
 
 	def on_touch_down(self, touch):
-		print ("touch me", self.pos)
-		self.pos = Vector(10, 0) + self.pos
+		if touch.x > self.pos[0] and touch.x < self.pos[0] + self.size[0]:
+			if touch.y > self.pos[1] and touch.y < self.pos[1] + self.size[1]:
+				print "clicked a button"
