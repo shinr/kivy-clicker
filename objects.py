@@ -2,10 +2,18 @@ from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty, NumericProperty
 from kivy.graphics import Rectangle
 from kivy.vector import Vector
+from kivy.event import EventDispatcher
 
 class ResourcesHandler(EventDispatcher):
-	score = NumericProperty(0)
+	scoreLabel = ObjectProperty(None)
 	crew = NumericProperty(0)
+
+	def __init__(self, scoreLabel, **kwargs):
+		super(ResourcesHandler, self).__init__(**kwargs)
+		self.scoreLabel = scoreLabel
+
+	def updateScoreByClickValue(self):
+		self.scoreLabel.updateScore(1)
 
 class MenuButton(Widget):
 	my_layout = ObjectProperty(None)
@@ -16,8 +24,10 @@ class MenuButton(Widget):
 		self.pos = Vector(10, 0) + self.pos
 
 class ClickButton(Widget):
-	def __init__(self, **kwargs):
+	resources = ObjectProperty(None)
+	def __init__(self, resourceHandler, **kwargs):
 		super(ClickButton, self).__init__(**kwargs)
+		self.resources = resourceHandler
 		with self.canvas:
 			Rectangle(size=(50, 50))
 			self.bind(pos=self.update_canvas)
@@ -32,4 +42,4 @@ class ClickButton(Widget):
 	def on_touch_down(self, touch):
 		if touch.x > self.pos[0] and touch.x < self.pos[0] + self.size[0]:
 			if touch.y > self.pos[1] and touch.y < self.pos[1] + self.size[1]:
-				print "clicked a button"
+				self.resources.updateScoreByClickValue()
