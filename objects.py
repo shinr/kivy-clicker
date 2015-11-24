@@ -1,7 +1,11 @@
 from kivy.uix.widget import Widget
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, NumericProperty
 from kivy.graphics import Rectangle
 from kivy.vector import Vector
+
+class ResourcesHandler(EventDispatcher):
+	score = NumericProperty(0)
+	crew = NumericProperty(0)
 
 class MenuButton(Widget):
 	my_layout = ObjectProperty(None)
