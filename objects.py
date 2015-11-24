@@ -5,15 +5,22 @@ from kivy.vector import Vector
 from kivy.event import EventDispatcher
 
 class ResourcesHandler(EventDispatcher):
-	scoreLabel = ObjectProperty(None)
-	crew = NumericProperty(0)
-
-	def __init__(self, scoreLabel, **kwargs):
+	crew = NumericProperty(0.0)
+	score = NumericProperty(0.0)
+	dps = NumericProperty(0.0)
+	def __init__(self, **kwargs):
 		super(ResourcesHandler, self).__init__(**kwargs)
-		self.scoreLabel = scoreLabel
+		self.dps = 1.0
 
 	def updateScoreByClickValue(self):
-		self.scoreLabel.updateScore(1)
+		self.score += 1
+
+	def getCurrentScore(self):
+		return self.score
+
+	def update(self, dt):
+		self.score += self.dps * dt
+
 
 class MenuButton(Widget):
 	my_layout = ObjectProperty(None)
