@@ -30,8 +30,7 @@ class ClickerGameApp(App):
 		layout = GameLayout()
 		layout.resourceHandler = ResourcesHandler()
 		mainScoreLabel = ScoreLabel(layout.resourceHandler, pos=(50, 350))
-		layout.add_widget(mainScoreLabel)
-		
+		layout.add_widget(mainScoreLabel)	
 		layout.add_widget(ClickButton(layout.resourceHandler, pos=(50, 50)))
 		Clock.schedule_interval(layout.update, 1.0 / 60.0)
 		return layout
