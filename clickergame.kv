@@ -1,13 +1,26 @@
 #:kivy 1.0.9
 
-<ClickButton>:
+<ClickButton>
 	canvas:
-
-<GameLayout>:
-	Label:
-        font_size: 14
-        center_x: root.width / 2
-        top: root.top
-        text: str("Star Clicker")
+		Color:
+			rgb: 1, 1, 1
+		Rectangle:
+			size: self.size
+			pos: self.pos
 
 
+<ScoreLabel>
+	canvas.before:
+		Color: 
+			rgb: .1, .1, 0
+		Rectangle:
+			size: self.size
+			pos: self.pos
+
+<MenuButton>
+	size_hint: .3, .08
+
+<BaseLabel>
+	canvas:
+		Color:
+			rgb: 1, 1, 1
