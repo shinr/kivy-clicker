@@ -4,7 +4,8 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty
 from objects import ClickButton, ResourcesHandler
-from ui import ScoreLabel, MenuButton, BaseLabel
+from ui.buttons import MenuButton
+from ui.labels import ScoreLabel, BaseLabel
 from kivy.config import Config
 from kivy.uix.screenmanager import ScreenManager, Screen
 import strings
@@ -32,7 +33,7 @@ class LayoutHandler(ScreenManager):
 		self.resources.update(dt)
 		self.current_screen.layout.update(dt)
 
-# using initialize method initialize the layout
+# to set up a layout for a screen, use the initialize method
 class BaseScreen(Screen):
 	layout = ObjectProperty(None)
 	resources = ObjectProperty(None)
@@ -41,14 +42,15 @@ class BaseScreen(Screen):
 		self.layout = GameLayout(size=(600, 800))
 
 	def initialize(self):
+		self.layout.resources = self.resources
 		self.layout.add_widget(MenuButton(menu=strings.SCREEN_MAIN_GAMEPLAY, text=strings.descriptions[strings.SCREEN_MAIN_GAMEPLAY], pos_hint={'x':0.0, 'y':.92}))
 		self.layout.add_widget(BaseLabel(text="Layout not initialized!"))
 		self.add_widget(self.layout)
 
 class MainGameplayScreen(BaseScreen):
 	def initialize(self):
-		mainScoreLabel = ScoreLabel(self.resources, pos_hint={'x':.1, 'y':.15}, size_hint=(.20, .05))
-		self.layout.add_widget(mainScoreLabel)	
+		self.layout.resources = self.resources
+		self.layout.add_widget(ScoreLabel(pos_hint={'x':.1, 'y':.15}, size_hint=(.20, .05)))	
 		self.layout.add_widget(ClickButton(self.resources, pos_hint={'x':.36, 'y':.5}, size_hint=(.24, .24)))
 		self.layout.add_widget(MenuButton(menu=strings.SCREEN_OPTIONS, text=strings.descriptions[strings.SCREEN_OPTIONS], pos_hint={'x':0.0, 'y':.92}))
 		self.layout.add_widget(MenuButton(menu=strings.SCREEN_UPGRADES, text=strings.descriptions[strings.SCREEN_UPGRADES], pos_hint={'x':0.3, 'y':.92}))
@@ -57,6 +59,8 @@ class MainGameplayScreen(BaseScreen):
 
 class OptionsScreen(BaseScreen):
 	def initialize(self):
+		self.layout.resources = self.resources
+		self.layout.add_widget(BaseLabel(text="Here's some cool options"))
 		self.layout.add_widget(MenuButton(menu=strings.SCREEN_MAIN_GAMEPLAY, text=strings.descriptions[strings.SCREEN_MAIN_GAMEPLAY], pos_hint={'x':0.0, 'y':.92}))
 		self.layout.add_widget(MenuButton(menu=strings.SCREEN_UPGRADES, text=strings.descriptions[strings.SCREEN_UPGRADES], pos_hint={'x':0.3, 'y':.92}))
 		self.layout.add_widget(MenuButton(menu=strings.SCREEN_QUESTS, text=strings.descriptions[strings.SCREEN_QUESTS], pos_hint={'x':0.6, 'y':.92}))
@@ -66,6 +70,9 @@ class UpgradeScreen(BaseScreen):
 	pass
 
 class QuestScreen(BaseScreen):
+	pass
+
+class DebugScreen(BaseScreen):
 	pass
 
 
@@ -90,6 +97,7 @@ class GameLayout(FloatLayout):
 	# overload for injecting my own stuff
 	def add_widget(self, widget, index=0, canvas=None):
 		widget.root = self.root
+		widget.resources = self.resources
 		super(GameLayout, self).add_widget(widget, index=index)
 
 
@@ -100,6 +108,7 @@ class ClickerGameApp(App):
 		handler.add_widget(OptionsScreen(name=strings.SCREEN_OPTIONS))
 		handler.add_widget(QuestScreen(name=strings.SCREEN_QUESTS))
 		handler.add_widget(UpgradeScreen(name=strings.SCREEN_UPGRADES))
+		handler.add_widget(UpgradeScreen(name=strings.SCREEN_DEBUG))
 		return handler
 
 if __name__ == '__main__':
