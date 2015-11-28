@@ -32,6 +32,7 @@ class ResourcesHandler(EventDispatcher):
 	def __init__(self, **kwargs):
 		super(ResourcesHandler, self).__init__(**kwargs)
 		self.resources = {
+			strings.DEFAULT:-1,
 			strings.RESOURCE_SCIENCE:self.score,
 			strings.RESOURCE_CREW:self.crew
 		}

@@ -13,6 +13,6 @@ descriptions = {
 	SCREEN_UPGRADES:"Upgrades",
 	SCREEN_DEBUG:"Debug"	
 }
-
+DEFAULT = 'default_string'
 RESOURCE_SCIENCE = "res_science"
 RESOURCE_CREW = "res_crew"

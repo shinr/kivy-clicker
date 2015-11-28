@@ -5,7 +5,7 @@ from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty
 from objects import ClickButton, ResourcesHandler, Upgrade
 from ui.buttons import MenuButton
-from ui.labels import ScoreLabel, BaseLabel
+from ui.labels import ScoreLabel, BaseLabel, AttributeLabel
 from kivy.config import Config
 from kivy.uix.screenmanager import ScreenManager, Screen
 import strings
@@ -19,12 +19,12 @@ class LayoutHandler(ScreenManager):
 		Clock.schedule_interval(self.update, 1.0 / 60.0)
 
 	# overload for setting some new stuff
-	def add_widget(self, screen, index=0, canvas=None):
+	def add_widget(self, screen, **kwargs):
 		screen.resources = self.resources
 		screen.layout.root = self
 		screen.initialize()
 		self.loadedScreens.append(screen)
-		super(LayoutHandler, self).add_widget(screen)
+		super(LayoutHandler, self).add_widget(screen, **kwargs)
 
 	def ChangeScreen(self, target):
 		self.current = target
@@ -50,7 +50,7 @@ class BaseScreen(Screen):
 class MainGameplayScreen(BaseScreen):
 	def initialize(self):
 		self.layout.resources = self.resources
-		self.layout.add_widget(ScoreLabel(pos_hint={'x':.1, 'y':.15}, size_hint=(.20, .05)))	
+		self.layout.add_widget(AttributeLabel(attribute=strings.RESOURCE_SCIENCE, text='Science {0}', pos_hint={'x':.1, 'y':.15}, size_hint=(.20, .05)))	
 		self.layout.add_widget(ClickButton(self.resources, pos_hint={'x':.36, 'y':.5}, size_hint=(.24, .24)))
 		self.layout.add_widget(MenuButton(menu=strings.SCREEN_OPTIONS, text=strings.descriptions[strings.SCREEN_OPTIONS], pos_hint={'x':0.0, 'y':.92}))
 		self.layout.add_widget(MenuButton(menu=strings.SCREEN_UPGRADES, text=strings.descriptions[strings.SCREEN_UPGRADES], pos_hint={'x':0.3, 'y':.92}))
@@ -107,10 +107,10 @@ class GameLayout(FloatLayout):
 				pass
 
 	# overload for injecting my own stuff
-	def add_widget(self, widget, index=0, canvas=None):
+	def add_widget(self, widget, **kwargs):
 		widget.root = self.root
 		widget.resources = self.resources
-		super(GameLayout, self).add_widget(widget, index=index)
+		super(GameLayout, self).add_widget(widget, **kwargs)
 
 
 class ClickerGameApp(App):
