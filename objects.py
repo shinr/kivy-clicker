@@ -1,12 +1,28 @@
 from kivy.uix.widget import Widget
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import ObjectProperty, NumericProperty
 from kivy.graphics import Rectangle
 from kivy.vector import Vector
 from kivy.event import EventDispatcher
+from ui.buttons import BaseButton
+from ui.labels import BaseLabel
 import strings 
 
-class Upgrade():
-	pass
+class BaseWidget(Widget):
+	resources = ObjectProperty(None)
+	root = ObjectProperty(None)
+
+class Upgrade(BaseWidget):
+	price = NumericProperty(0)
+	def __init__(self, **kwargs):
+		super(BaseWidget, self).__init__(**kwargs)
+
+	def initialize(self,description_text='This is template', button_position=(.1, .1), price=1):
+		x, y = button_position[0],button_position[1]
+		self.parent.add_widget(BaseLabel(text=description_text, pos_hint={'x':x, 'y':y}, size_hint=(.1, .1)))
+		self.parent.add_widget(BaseButton(text=str(price), pos_hint={'x':x+.2, 'y':y}, size_hint=(.2, .1)))
+
 
 class ResourcesHandler(EventDispatcher):
 	crew = NumericProperty(0.0)
@@ -32,10 +48,6 @@ class ResourcesHandler(EventDispatcher):
 	def update(self, dt):
 		self.resources[strings.RESOURCE_SCIENCE] += self.dps * dt
 
-
-class BaseWidget(Widget):
-	resources = ObjectProperty(None)
-	root = ObjectProperty(None)
 				
 class ClickButton(BaseWidget):
 	def __init__(self, resourceHandler, **kwargs):

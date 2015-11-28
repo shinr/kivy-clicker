@@ -3,7 +3,7 @@ from kivy.clock import Clock
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty
-from objects import ClickButton, ResourcesHandler
+from objects import ClickButton, ResourcesHandler, Upgrade
 from ui.buttons import MenuButton
 from ui.labels import ScoreLabel, BaseLabel
 from kivy.config import Config
@@ -67,7 +67,19 @@ class OptionsScreen(BaseScreen):
 		self.add_widget(self.layout)
 
 class UpgradeScreen(BaseScreen):
-	pass
+	def __init__(self, **kwargs):
+		super(UpgradeScreen, self).__init__(**kwargs)
+		self.upgrades = [Upgrade(description_text='Eka'), Upgrade(description_text='Toka')]
+
+	def initialize(self):
+		self.layout.resources = self.resources
+		self.layout.add_widget(BaseLabel(text="Here's some cool upgrades"))
+		x, y = 0.05, 0.05
+		for u in self.upgrades:
+			x, y = x, y+.15
+			self.layout.add_widget(u)
+			u.initialize(button_position=(x, y))
+		self.add_widget(self.layout)
 
 class QuestScreen(BaseScreen):
 	pass
