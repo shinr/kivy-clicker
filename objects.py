@@ -1,6 +1,8 @@
 from kivy.uix.widget import Widget
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.stencilview import StencilView
 from kivy.properties import ObjectProperty, NumericProperty
 from kivy.graphics import Rectangle
 from kivy.vector import Vector
@@ -13,15 +15,39 @@ class BaseWidget(Widget):
 	resources = ObjectProperty(None)
 	root = ObjectProperty(None)
 
-class Upgrade(BaseWidget):
-	price = NumericProperty(0)
+class UpgradeList(RelativeLayout, StencilView):
+	upgrades = []
+	initializable = True
+	upgrade_list_layout = ObjectProperty(None)
 	def __init__(self, **kwargs):
-		super(BaseWidget, self).__init__(**kwargs)
+		super(UpgradeList, self).__init__(**kwargs)
+		for i in range(0, 4):
+			self.upgrades.append(Upgrade()) 
+		self.upgrade_list_layout= BoxLayout(orientation='vertical', size_hint=(.9, .14 * i), spacing=10)
 
-	def initialize(self,description_text='This is template', button_position=(.1, .1), price=1):
-		x, y = button_position[0],button_position[1]
-		self.parent.add_widget(BaseLabel(text=description_text, pos_hint={'x':x, 'y':y}, size_hint=(.1, .1)))
-		self.parent.add_widget(BaseButton(text=str(price), pos_hint={'x':x+.2, 'y':y}, size_hint=(.2, .1)))
+	def initialize(self):
+		i = 0
+		for u in self.upgrades:
+			i += 1
+			self.upgrade_list_layout.add_widget(u)
+			u.initialize(description_text='Upgrade no. {0}'.format(str(i)))
+		self.add_widget(self.upgrade_list_layout)
+
+	def update(self, dt):
+		for c in self.children:
+			c.pos = Vector(*(0, 1)) + c.pos # movement test
+
+class Upgrade(BoxLayout, StencilView):
+	price = NumericProperty(0)
+	initializable = False
+	def __init__(self, **kwargs):
+		super(Upgrade, self).__init__(**kwargs)
+		
+
+	def initialize(self,description_text='This is template', price=1):
+		self.add_widget(BaseLabel(text=description_text, size_hint=(.7, .90)))
+		self.add_widget(BaseButton(text=str(price), size_hint=(.3, .90)))
+		
 
 
 class ResourcesHandler(EventDispatcher):
@@ -51,6 +77,7 @@ class ResourcesHandler(EventDispatcher):
 
 				
 class ClickButton(BaseWidget):
+	initializable = False
 	def __init__(self, resourceHandler, **kwargs):
 		super(ClickButton, self).__init__(**kwargs)
 		self.resources = resourceHandler

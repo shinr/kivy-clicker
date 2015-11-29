@@ -4,6 +4,7 @@ from kivy.properties import ObjectProperty, NumericProperty, StringProperty
 class BaseButton(Button):
 	root = ObjectProperty(None)
 	resources = ObjectProperty(None)
+	initializable = False
 
 class PurchaseButton(BaseButton):
 	pass

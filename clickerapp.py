@@ -3,9 +3,10 @@ from kivy.clock import Clock
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty
-from objects import ClickButton, ResourcesHandler, Upgrade
+from objects import ClickButton, ResourcesHandler, Upgrade, UpgradeList
 from ui.buttons import MenuButton
 from ui.labels import ScoreLabel, BaseLabel, AttributeLabel
+from ui.layouts import MenuLayout
 from kivy.config import Config
 from kivy.uix.screenmanager import ScreenManager, Screen
 import strings
@@ -34,6 +35,7 @@ class LayoutHandler(ScreenManager):
 		self.current_screen.layout.update(dt)
 
 # to set up a layout for a screen, use the initialize method
+# this could be 
 class BaseScreen(Screen):
 	layout = ObjectProperty(None)
 	resources = ObjectProperty(None)
@@ -52,33 +54,23 @@ class MainGameplayScreen(BaseScreen):
 		self.layout.resources = self.resources
 		self.layout.add_widget(AttributeLabel(attribute=strings.RESOURCE_SCIENCE, text='Science {0}', pos_hint={'x':.1, 'y':.15}, size_hint=(.20, .05)))	
 		self.layout.add_widget(ClickButton(self.resources, pos_hint={'x':.36, 'y':.5}, size_hint=(.24, .24)))
-		self.layout.add_widget(MenuButton(menu=strings.SCREEN_OPTIONS, text=strings.descriptions[strings.SCREEN_OPTIONS], pos_hint={'x':0.0, 'y':.92}))
-		self.layout.add_widget(MenuButton(menu=strings.SCREEN_UPGRADES, text=strings.descriptions[strings.SCREEN_UPGRADES], pos_hint={'x':0.3, 'y':.92}))
-		self.layout.add_widget(MenuButton(menu=strings.SCREEN_QUESTS, text=strings.descriptions[strings.SCREEN_QUESTS], pos_hint={'x':0.6, 'y':.92}))
+		self.layout.add_widget(MenuLayout(pos_hint={'x':0, 'y':.92}))
 		self.add_widget(self.layout)
 
 class OptionsScreen(BaseScreen):
 	def initialize(self):
 		self.layout.resources = self.resources
 		self.layout.add_widget(BaseLabel(text="Here's some cool options"))
-		self.layout.add_widget(MenuButton(menu=strings.SCREEN_MAIN_GAMEPLAY, text=strings.descriptions[strings.SCREEN_MAIN_GAMEPLAY], pos_hint={'x':0.0, 'y':.92}))
-		self.layout.add_widget(MenuButton(menu=strings.SCREEN_UPGRADES, text=strings.descriptions[strings.SCREEN_UPGRADES], pos_hint={'x':0.3, 'y':.92}))
-		self.layout.add_widget(MenuButton(menu=strings.SCREEN_QUESTS, text=strings.descriptions[strings.SCREEN_QUESTS], pos_hint={'x':0.6, 'y':.92}))
+		self.layout.add_widget(MenuLayout(pos_hint={'x':0, 'y':.92}))
 		self.add_widget(self.layout)
 
+# loads a list of upgrades from xml and creates a browsable list
 class UpgradeScreen(BaseScreen):
-	def __init__(self, **kwargs):
-		super(UpgradeScreen, self).__init__(**kwargs)
-		self.upgrades = [Upgrade(description_text='Eka'), Upgrade(description_text='Toka')]
-
 	def initialize(self):
 		self.layout.resources = self.resources
 		self.layout.add_widget(BaseLabel(text="Here's some cool upgrades"))
-		x, y = 0.05, 0.05
-		for u in self.upgrades:
-			x, y = x, y+.15
-			self.layout.add_widget(u)
-			u.initialize(button_position=(x, y))
+		self.layout.add_widget(UpgradeList(pos_hint={'x':.05, 'y':.0}, size_hint=(.9, .8)))
+		self.layout.add_widget(MenuLayout(pos_hint={'x':0, 'y':.92}))
 		self.add_widget(self.layout)
 
 class QuestScreen(BaseScreen):
@@ -98,6 +90,9 @@ class GameLayout(FloatLayout):
 			if child.dispatch('on_touch_down', touch):
 				return True
 
+	def on_touch_move(self, touch):
+		pass
+
 	# update all widgets
 	def update(self, dt):
 		for child in self.children:
@@ -110,6 +105,8 @@ class GameLayout(FloatLayout):
 	def add_widget(self, widget, **kwargs):
 		widget.root = self.root
 		widget.resources = self.resources
+		if widget.initializable:
+			widget.initialize()
 		super(GameLayout, self).add_widget(widget, **kwargs)
 
 
@@ -120,7 +117,7 @@ class ClickerGameApp(App):
 		handler.add_widget(OptionsScreen(name=strings.SCREEN_OPTIONS))
 		handler.add_widget(QuestScreen(name=strings.SCREEN_QUESTS))
 		handler.add_widget(UpgradeScreen(name=strings.SCREEN_UPGRADES))
-		handler.add_widget(UpgradeScreen(name=strings.SCREEN_DEBUG))
+		handler.add_widget(DebugScreen(name=strings.SCREEN_DEBUG))
 		return handler
 
 if __name__ == '__main__':

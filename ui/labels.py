@@ -8,6 +8,7 @@ import strings
 class BaseLabel(Label):
 	root = ObjectProperty(None)
 	resources = ObjectProperty(None)
+	initializable = False
 
 class AttributeLabel(BaseLabel):
 	text_mask = StringProperty('')
