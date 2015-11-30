@@ -8,6 +8,7 @@ class MenuLayout(BoxLayout):
 	root = ObjectProperty(None)
 	resources = ObjectProperty(None)
 	initializable = True
+	scrollable = False
 	def __init__(self, **kwargs):
 		super(MenuLayout, self).__init__(**kwargs)
 		

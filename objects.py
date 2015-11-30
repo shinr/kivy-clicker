@@ -10,15 +10,19 @@ from kivy.event import EventDispatcher
 from ui.buttons import BaseButton
 from ui.labels import BaseLabel
 import strings 
+import math
 
 class BaseWidget(Widget):
 	resources = ObjectProperty(None)
 	root = ObjectProperty(None)
+	scrollable = False
 
 class UpgradeList(RelativeLayout, StencilView):
 	upgrades = []
 	initializable = True
 	upgrade_list_layout = ObjectProperty(None)
+	scrollable = True
+	current_scroll = NumericProperty(0.0)
 	def __init__(self, **kwargs):
 		super(UpgradeList, self).__init__(**kwargs)
 		for i in range(0, 4):
@@ -35,7 +39,14 @@ class UpgradeList(RelativeLayout, StencilView):
 
 	def update(self, dt):
 		for c in self.children:
-			c.pos = Vector(*(0, 1)) + c.pos # movement test
+			c.pos = Vector(*(0, self.current_scroll)) + c.pos
+		if not self.current_scroll == 0.0:
+			self.current_scroll *= .95
+			if abs(self.current_scroll) < .1:
+				self.current_scroll = 0.0
+
+	def scroll(self, scroll):
+		self.current_scroll = scroll
 
 class Upgrade(BoxLayout, StencilView):
 	price = NumericProperty(0)
@@ -76,13 +87,3 @@ class ResourcesHandler(EventDispatcher):
 		self.resources[strings.RESOURCE_SCIENCE] += self.dps * dt
 
 				
-class ClickButton(BaseWidget):
-	initializable = False
-	def __init__(self, resourceHandler, **kwargs):
-		super(ClickButton, self).__init__(**kwargs)
-		self.resources = resourceHandler
-
-	def on_touch_down(self, touch):
-		if touch.x > self.pos[0] and touch.x < self.pos[0] + self.size[0]:
-			if touch.y > self.pos[1] and touch.y < self.pos[1] + self.size[1]:
-				self.resources.update_resource_by_value(strings.RESOURCE_SCIENCE, 1)

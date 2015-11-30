@@ -5,6 +5,7 @@ class BaseButton(Button):
 	root = ObjectProperty(None)
 	resources = ObjectProperty(None)
 	initializable = False
+	scrollable = False
 
 class PurchaseButton(BaseButton):
 	pass
@@ -18,3 +19,14 @@ class MenuButton(BaseButton):
 
 	def changeScreen(self, instance):
 		self.root.ChangeScreen(self.menu)
+
+class ClickButton(BaseButton):
+	initializable = False
+	def __init__(self, resourceHandler, **kwargs):
+		super(ClickButton, self).__init__(**kwargs)
+		self.resources = resourceHandler
+
+	def on_touch_down(self, touch):
+		if touch.x > self.pos[0] and touch.x < self.pos[0] + self.size[0]:
+			if touch.y > self.pos[1] and touch.y < self.pos[1] + self.size[1]:
+				self.resources.update_resource_by_value(strings.RESOURCE_SCIENCE, 1)

@@ -9,6 +9,7 @@ class BaseLabel(Label):
 	root = ObjectProperty(None)
 	resources = ObjectProperty(None)
 	initializable = False
+	scrollable = False
 
 class AttributeLabel(BaseLabel):
 	text_mask = StringProperty('')

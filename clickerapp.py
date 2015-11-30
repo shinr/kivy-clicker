@@ -3,8 +3,9 @@ from kivy.clock import Clock
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty
-from objects import ClickButton, ResourcesHandler, Upgrade, UpgradeList
-from ui.buttons import MenuButton
+from kivy.vector import Vector
+from objects import ResourcesHandler, Upgrade, UpgradeList
+from ui.buttons import MenuButton, ClickButton
 from ui.labels import ScoreLabel, BaseLabel, AttributeLabel
 from ui.layouts import MenuLayout
 from kivy.config import Config
@@ -73,25 +74,39 @@ class UpgradeScreen(BaseScreen):
 		self.layout.add_widget(MenuLayout(pos_hint={'x':0, 'y':.92}))
 		self.add_widget(self.layout)
 
+# lists quests and tracks their status, assign crew to quests to earn massive amounts of science
 class QuestScreen(BaseScreen):
 	pass
 
+# bunch of variables to control
 class DebugScreen(BaseScreen):
 	pass
 
+# ship contains a graph of subsystems you can assign crew to, these boost your science dps
+class ShipScreen(BaseScreen):
+	pass
 
 class GameLayout(FloatLayout):
 	root = ObjectProperty(None)
+	old_pos = Vector(0, 0)
 	def __init__(self, **kwargs):
 		super(GameLayout, self).__init__(**kwargs)
 
 	def on_touch_down(self, touch):
+		new_pos = Vector(touch.x, touch.y)
+		self.old_pos = new_pos
 		for child in self.children:
 			if child.dispatch('on_touch_down', touch):
 				return True
 
 	def on_touch_move(self, touch):
-		pass
+		new_pos = Vector(touch.x, touch.y)
+		if not new_pos.x == self.old_pos.x or new_pos.y == self.old_pos.y:
+			distance_y = new_pos.y - self.old_pos.y
+			if distance_y > 1 or distance_y < -1:
+				for c in [kid for kid in self.children if kid.scrollable == True]:
+					c.scroll(distance_y)
+		self.old_pos = new_pos
 
 	# update all widgets
 	def update(self, dt):
