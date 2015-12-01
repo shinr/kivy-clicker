@@ -15,10 +15,12 @@ import strings
 class LayoutHandler(ScreenManager):
 	resources = ObjectProperty(None)
 	loadedScreens = []
-	def __init__(self, **kwargs):
+	debug_mode = False
+	def __init__(self, debug_mode=True, **kwargs):
 		super(LayoutHandler, self).__init__(**kwargs)
 		self.resources = ResourcesHandler()
 		Clock.schedule_interval(self.update, 1.0 / 60.0)
+		self.debug_mode = debug_mode
 
 	# overload for setting some new stuff
 	def add_widget(self, screen, **kwargs):
@@ -133,6 +135,7 @@ class ClickerGameApp(App):
 		handler.add_widget(QuestScreen(name=strings.SCREEN_QUESTS))
 		handler.add_widget(UpgradeScreen(name=strings.SCREEN_UPGRADES))
 		handler.add_widget(DebugScreen(name=strings.SCREEN_DEBUG))
+		handler.add_widget(ShipScreen(name=strings.SCREEN_SHIP))
 		return handler
 
 if __name__ == '__main__':
