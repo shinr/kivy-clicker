@@ -37,6 +37,11 @@ class LayoutHandler(ScreenManager):
 		self.resources.update(dt)
 		self.current_screen.layout.update(dt)
 
+def convert_from_width_to_height(width, ratio=1.7777):
+	return width / ratio
+
+def convert_from_height_to_width(height, ratio=1.7777):
+	return height * ratio
 # to set up a layout for a screen, use the initialize method
 # this could be 
 class BaseScreen(Screen):
@@ -55,8 +60,8 @@ class BaseScreen(Screen):
 class MainGameplayScreen(BaseScreen):
 	def initialize(self):
 		self.layout.resources = self.resources
-		self.layout.add_widget(AttributeLabel(attribute=strings.RESOURCE_SCIENCE, text='Science {0}', pos_hint={'x':.1, 'y':.15}, size_hint=(.20, .05)))	
-		self.layout.add_widget(ClickButton(self.resources, pos_hint={'x':.36, 'y':.5}, size_hint=(.24, .24)))
+		self.layout.add_widget(AttributeLabel(attribute=strings.RESOURCE_SCIENCE, text='Science {0}', pos_hint={'x':.5, 'y':.7}, size_hint=(.20, .05)))	
+		self.layout.add_widget(ClickButton(self.resources, pos_hint={'x':.3, 'y':.1}, size_hint=(.4, convert_from_width_to_height(.4))))
 		self.layout.add_widget(MenuLayout(pos_hint={'x':0, 'y':.92}))
 		self.add_widget(self.layout)
 
@@ -140,7 +145,7 @@ class ClickerGameApp(App):
 
 if __name__ == '__main__':
 	Config.set('graphics', 'resizable', '1')
-	Config.set('graphics', 'width', '600')
+	Config.set('graphics', 'width', '450')
 	Config.set('graphics', 'height', '800')
 	game = ClickerGameApp()
 	game.run()

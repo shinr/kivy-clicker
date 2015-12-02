@@ -60,6 +60,20 @@ class Upgrade(BoxLayout, StencilView):
 		self.add_widget(BaseButton(text=str(price), size_hint=(.3, .90)))
 		
 
+class ProgressBar(BaseWidget):
+	start = NumericProperty(0.0)
+	current = NumericProperty(0.0)
+	end = NumericProperty(0.0)
+	attribute = StringProperty('')
+	def __init__(self, start=0.0, end=1.0, attribute=strings.DEFAULT, **kwargs):
+		super(ProgressBar, self).__init__(**kwargs)
+		self.start, self.end = start, end
+		self.attribute = attribute
+
+	def update(self, dt):
+		dps = self.resources.get_attribute_by_string(self.attribute)
+		
+
 
 class ResourcesHandler(EventDispatcher):
 	crew = NumericProperty(0.0)
@@ -71,7 +85,8 @@ class ResourcesHandler(EventDispatcher):
 		self.resources = {
 			strings.DEFAULT:-1,
 			strings.RESOURCE_SCIENCE:self.score,
-			strings.RESOURCE_CREW:self.crew
+			strings.RESOURCE_CREW:self.crew, 
+			strings.RESOURCE_DPS:self.dps
 		}
 		self.dps = 1.0
 

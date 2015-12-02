@@ -28,3 +28,4 @@ debugOnly = {
 DEFAULT = 'default_string'
 RESOURCE_SCIENCE = "res_science"
 RESOURCE_CREW = "res_crew"
+RESOURCE_DPS = "res_dps"
