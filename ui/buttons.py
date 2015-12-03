@@ -1,5 +1,6 @@
 from kivy.uix.button import Button
 from kivy.properties import ObjectProperty, NumericProperty, StringProperty
+import strings
 
 class BaseButton(Button):
 	root = ObjectProperty(None)

@@ -26,6 +26,12 @@ class MenuLayout(BoxLayout):
 		widget.resources = self.resources
 		super(BoxLayout, self).add_widget(widget, **kwargs)
 
+class PopUpMenu(BoxLayout):
+	initializable = True
+	def initialize(self):
+		pass
+
+
 	
 		
 
