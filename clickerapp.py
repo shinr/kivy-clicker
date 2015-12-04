@@ -1,3 +1,4 @@
+from functools import partial
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.uix.floatlayout import FloatLayout
@@ -5,12 +6,14 @@ from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty
 from kivy.vector import Vector
 from objects import ResourcesHandler, Upgrade, UpgradeList, ProgressBarLayout
-from ui.buttons import MenuButton, ClickButton
+from ui.buttons import MenuButton, ClickButton, BaseButton
 from ui.labels import ScoreLabel, BaseLabel, AttributeLabel
-from ui.layouts import MenuLayout
+from ui.layouts import MenuLayout, PopUpMenu
+from ui import layouts
 from kivy.config import Config
 from kivy.uix.screenmanager import ScreenManager, Screen
 import strings
+
 
 class LayoutHandler(ScreenManager):
 	resources = ObjectProperty(None)
@@ -36,6 +39,16 @@ class LayoutHandler(ScreenManager):
 	def update(self, dt):
 		self.resources.update(dt)
 		self.current_screen.layout.update(dt)
+
+	def create_pop_up(self, instance, popup_name="", **kwargs):
+		if hasattr(layouts, popup_name):
+			popup = getattr(layouts, popup_name)(**kwargs)
+			self.current_screen.layout.add_widget(popup)
+			self.current_screen.layout.lock(popup)
+
+	def reset(self, instance):
+		print("I was reset!")
+		
 
 def convert_from_width_to_height(width, ratio=1.7777):
 	return width / ratio
@@ -63,9 +76,10 @@ class MainGameplayScreen(BaseScreen):
 		self.layout.resources = self.resources
 		self.add_widget(self.layout)
 		self.layout.add_widget(AttributeLabel(attribute=strings.RESOURCE_SCIENCE, text='Science {0}', pos_hint={'x':.5, 'y':.7}, size_hint=(.20, .05)))	
-		self.layout.add_widget(ClickButton(self.resources, pos_hint={'x':.3, 'y':.1}, size_hint=(.4, convert_from_width_to_height(.4))))
+		self.layout.add_widget(ClickButton(self.resources, pos_hint={'x':.3, 'y':.15}, size_hint=(.4, convert_from_width_to_height(.4))))
 		self.layout.add_widget(MenuLayout(pos_hint={'x':0, 'y':.92}))
-		self.layout.add_widget(ProgressBarLayout(0.0, 10.0, tracked_attribute=strings.RESOURCE_SCIENCE, pos_hint={'x':.1, 'y':.52}, size_hint=(.7, .05)))
+		self.layout.add_widget(ProgressBarLayout(0.0, 10.0, tracked_attribute=strings.RESOURCE_SCIENCE, pos_hint={'x':.1, 'y':.52}, size_hint=(.8, .05)))		
+		self.layout.add_widget(BaseButton(text='Warp!', pos_hint={'x':.3, 'y':.05}, size_hint=(.4, .05), on_press=partial(self.layout.root.create_pop_up, popup_name="ResetPopUp", size_hint=(.8, .3), pos_hint={'x':.1, 'y':.3})))
 		
 
 class OptionsScreen(BaseScreen):
@@ -81,8 +95,7 @@ class UpgradeScreen(BaseScreen):
 	def initialize(self):
 		self.layout.resources = self.resources
 		self.add_widget(self.layout)
-		self.layout.add_widget(BaseLabel(text="Here's some cool upgrades"))
-		self.layout.add_widget(UpgradeList(pos_hint={'x':.05, 'y':.0}, size_hint=(.9, .8)))
+		self.layout.add_widget(UpgradeList(pos_hint={'x':.01, 'y':.01}, size_hint=(.9, .8)))
 		self.layout.add_widget(MenuLayout(pos_hint={'x':0, 'y':.92}))
 		
 
@@ -101,14 +114,29 @@ class ShipScreen(BaseScreen):
 class GameLayout(FloatLayout):
 	root = ObjectProperty(None)
 	old_pos = Vector(0, 0)
+	locked = False
+	lock_requested_by = ObjectProperty(None)
 	def __init__(self, **kwargs):
 		super(GameLayout, self).__init__(**kwargs)
+
+	# locking will not send actions except to the entity who requested the lock, until unlock
+	def lock(self, requested):
+		self.locked = True
+		self.lock_requested_by = requested
+
+	def unlock(self, requested):
+		if requested == self.lock_requested_by:
+			self.locked = False
 
 	def on_touch_down(self, touch):
 		new_pos = Vector(touch.x, touch.y)
 		self.old_pos = new_pos
 		for child in self.children:
-			if child.dispatch('on_touch_down', touch):
+			if self.locked:
+				if child is self.lock_requested_by:
+					if child.dispatch('on_touch_down', touch):
+						return True
+			elif child.dispatch('on_touch_down', touch):
 				return True
 
 	def on_touch_move(self, touch):
@@ -128,10 +156,12 @@ class GameLayout(FloatLayout):
 			except AttributeError:
 				pass
 
+
 	# overload for injecting my own stuff
 	def add_widget(self, widget, **kwargs):
 		widget.root = self.root
 		widget.resources = self.resources
+		widget.root_parent = self
 		super(GameLayout, self).add_widget(widget, **kwargs)
 		if widget.initializable:
 			widget.initialize()

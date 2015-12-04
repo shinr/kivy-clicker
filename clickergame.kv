@@ -4,9 +4,7 @@
 	canvas:
 		Color:
 			rgb: 1, 1, 1
-		Rectangle:
-			size: self.size
-			pos: self.pos
+		
 
 
 <ScoreLabel>
@@ -48,4 +46,17 @@
 	canvas:
 		Color:
 			rgb: 0, 1, 0
+
+<BasePopUpBehaviour>
+	canvas.before:
+		Color:
+			rgba: 0, 0, 0, .7
+		Rectangle:
+			size: 480, 800
+			pos:0,0
+		Color:
+			rgba: .4, .4, .9, 1
+		Rectangle:
+			size: self.size
+			pos: self.pos
 		

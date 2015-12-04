@@ -8,6 +8,7 @@ import strings
 class BaseLabel(Label):
 	root = ObjectProperty(None)
 	resources = ObjectProperty(None)
+	root_parent = ObjectProperty(None)
 	initializable = False
 	scrollable = False
 

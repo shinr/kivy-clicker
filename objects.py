@@ -15,7 +15,11 @@ import math
 class BaseWidget(Widget):
 	resources = ObjectProperty(None)
 	root = ObjectProperty(None)
+	root_parent = ObjectProperty(None)
 	scrollable = False
+
+class SliderItem(BaseWidget):
+	pass
 
 class UpgradeList(RelativeLayout, StencilView):
 	upgrades = []
