@@ -3,7 +3,7 @@ from kivy.uix.stacklayout import StackLayout
 from kivy.properties import ObjectProperty
 from kivy.vector import Vector
 from ui.buttons import MenuButton, BaseButton
-from ui.labels import BaseLabel
+from ui.labels import BaseLabel, AttributeLabel
 import strings
 
 class BaseLayoutBehaviour(object):
@@ -40,14 +40,28 @@ class BasePopUpBehaviour(BaseLayoutBehaviour):
 		self.root_parent.unlock(self)
 		self.root_parent.remove_widget(self)
 
-class ResetPopUp(StackLayout, BasePopUpBehaviour):
-	def __init__(self, **kwargs):
-		super(ResetPopUp, self).__init__(**kwargs)
+class ConfirmationPopUp(StackLayout, BasePopUpBehaviour):
+	pass
+
+class AttributeModifierPopUp(StackLayout, BasePopUpBehaviour):
+	pass
+
+class ListPopUp(BoxLayout, BasePopUpBehaviour):
+	pass
+
+# one text field, data field, ok, cancel, do not show
+class WarningPopUp(StackLayout, BasePopUpBehaviour):
+	layout_fields = {}
+	def __init__(self, layout_fields={}, **kwargs):
+		super(WarningPopUp, self).__init__(**kwargs)
+		self.layout_fields = layout_fields
 
 	def initialize(self):
-		self.add_widget(BaseLabel(text="Are you sure you want to reset?\nYou will lose all progress!", size_hint=(1, .6)))
+		self.add_widget(BaseLabel(text=self.layout_fields['message_field'], size_hint=(1, .5)))
+		self.add_widget(AttributeLabel(text=self.layout_fields['attribute_information_field'], size_hint=(1, .1)))
 		self.add_widget(BaseButton(text="OK", on_press=self.root.reset, size_hint=(.5, .2)))
 		self.add_widget(BaseButton(text="Cancel", on_press=self.close, size_hint=(.5, .2)))
+		#self.add_widget(CheckBoxItem())
 
 # dumb test class
 class PopUpMenu(BoxLayout, BaseLayoutBehaviour):
