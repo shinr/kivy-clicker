@@ -41,10 +41,26 @@ class BasePopUpBehaviour(BaseLayoutBehaviour):
 		self.root_parent.remove_widget(self)
 
 class ConfirmationPopUp(StackLayout, BasePopUpBehaviour):
-	pass
+	def __init__(self, layout_fields={}, **kwargs):
+		super(ConfirmationPopUp, self).__init__(**kwargs)
+		self.layout_fields = layout_fields
+
+	def initialize(self):
+		self.add_widget(BaseLabel(text=self.layout_fields['message_field'], size_hint=(1, .5)))
+
 
 class AttributeModifierPopUp(StackLayout, BasePopUpBehaviour):
-	pass
+	def __init__(self, layout_fields={}, **kwargs):
+		super(AttributeModifierPopUp, self).__init__(**kwargs)
+		self.layout_fields = layout_fields
+
+	def initialize(self):
+		self.add_widget(BaseLabel(text=self.layout_fields['message_field'], size_hint=(1, .5)))
+		self.add_widget(BaseButton(text="-", on_press=self.layout_fields['minus_action'], size_hint=(.1, .1)))
+		self.add_widget(AttributeLabel(text=self.layout_fields['attribute_information_field'], attribute=self.layout_fields['attribute_variable_field'], size_hint=(.8, .1)))
+		self.add_widget(BaseButton(text="+", on_press=self.layout_fields['plus_action'], size_hint=(.1, .1)))
+		self.add_widget(BaseButton(text="OK", on_press=self.layout_fields['confirm_action'], size_hint=(.5, .2)))
+		self.add_widget(BaseButton(text="Cancel", on_press=self.close, size_hint=(.5, .2)))
 
 class ListPopUp(BoxLayout, BasePopUpBehaviour):
 	pass
@@ -58,8 +74,8 @@ class WarningPopUp(StackLayout, BasePopUpBehaviour):
 
 	def initialize(self):
 		self.add_widget(BaseLabel(text=self.layout_fields['message_field'], size_hint=(1, .5)))
-		self.add_widget(AttributeLabel(text=self.layout_fields['attribute_information_field'], size_hint=(1, .1)))
-		self.add_widget(BaseButton(text="OK", on_press=self.root.reset, size_hint=(.5, .2)))
+		self.add_widget(AttributeLabel(text=self.layout_fields['attribute_information_field'], attribute=self.layout_fields['attribute_variable_field'], size_hint=(1, .1)))
+		self.add_widget(BaseButton(text="OK", on_press=self.layout_fields['confirm_action'], size_hint=(.5, .2)))
 		self.add_widget(BaseButton(text="Cancel", on_press=self.close, size_hint=(.5, .2)))
 		#self.add_widget(CheckBoxItem())
 

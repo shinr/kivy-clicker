@@ -33,7 +33,7 @@ class LayoutHandler(ScreenManager):
 		self.loadedScreens.append(screen)
 		super(LayoutHandler, self).add_widget(screen, **kwargs)
 
-	def ChangeScreen(self, target):
+	def change_screen(self, target):
 		self.current = target
 
 	def update(self, dt):
@@ -79,7 +79,7 @@ class MainGameplayScreen(BaseScreen):
 		self.layout.add_widget(ClickButton(self.resources, pos_hint={'x':.3, 'y':.15}, size_hint=(.4, convert_from_width_to_height(.4))))
 		self.layout.add_widget(MenuLayout(pos_hint={'x':0, 'y':.92}))
 		self.layout.add_widget(ProgressBarLayout(0.0, 10.0, tracked_attribute=strings.RESOURCE_SCIENCE, pos_hint={'x':.1, 'y':.52}, size_hint=(.8, .05)))		
-		self.layout.add_widget(BaseButton(text='Warp!', pos_hint={'x':.3, 'y':.05}, size_hint=(.4, .05), on_press=partial(self.layout.root.create_pop_up, popup_name="WarningPopUp", layout_fields={'message_field':'Are you sure?', 'attribute_information_field':'Attribute {0}'}, size_hint=(.8, .3), pos_hint={'x':.1, 'y':.3})))
+		self.layout.add_widget(BaseButton(text='Warp!', pos_hint={'x':.3, 'y':.05}, size_hint=(.4, .05), on_press=partial(self.layout.root.create_pop_up, popup_name="WarningPopUp", layout_fields={'confirm_action':self.layout.root.reset,'attribute_variable_field':strings.RESOURCE_SCIENCE,'message_field':'Are you sure?', 'attribute_information_field':'Attribute {0}', 'confirm_function':self.layout.root.reset}, size_hint=(.8, .3), pos_hint={'x':.1, 'y':.3})))
 		
 
 class OptionsScreen(BaseScreen):
@@ -88,6 +88,14 @@ class OptionsScreen(BaseScreen):
 		self.add_widget(self.layout)
 		self.layout.add_widget(BaseLabel(text="Here's some cool options"))
 		self.layout.add_widget(MenuLayout(pos_hint={'x':0, 'y':.92}))
+		self.layout.add_widget(BaseButton(text='H', pos_hint={'x':.3, 'y':.05}, size_hint=(.4, .05), on_press=partial(self.layout.root.create_pop_up, popup_name="AttributeModifierPopUp", 
+			layout_fields={
+			'message_field':'Modify something', 
+			'attribute_information_field':'This is info {0}',
+			'attribute_variable_field':strings.RESOURCE_SCIENCE,
+			'minus_action':self.layout.root.reset,
+			'plus_action':self.layout.root.reset,
+			'confirm_action':self.layout.root.reset})))
 		
 
 # loads a list of upgrades from xml and creates a browsable list

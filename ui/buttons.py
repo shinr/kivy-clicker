@@ -20,7 +20,7 @@ class MenuButton(BaseButton):
 		self.bind(on_press=self.changeScreen)
 
 	def changeScreen(self, instance):
-		self.root.ChangeScreen(self.menu)
+		self.root.change_screen(self.menu)
 
 class ClickButton(BaseButton):
 	initializable = False
