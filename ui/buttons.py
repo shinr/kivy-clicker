@@ -4,7 +4,7 @@ import strings
 
 class BaseButton(Button):
 	root = ObjectProperty(None)
-	resources = ObjectProperty(None)
+	game_logic = ObjectProperty(None)
 	root_parent = ObjectProperty(None)
 	initializable = False
 	scrollable = False
@@ -24,13 +24,6 @@ class MenuButton(BaseButton):
 
 class ClickButton(BaseButton):
 	initializable = False
-	def __init__(self, resourceHandler, **kwargs):
+	def __init__(self, **kwargs):
 		super(ClickButton, self).__init__(**kwargs)
-		self.resources = resourceHandler
-
-	def on_touch_down(self, touch):
-		if touch.x > self.pos[0] and touch.x < self.pos[0] + self.size[0]:
-			if touch.y > self.pos[1] and touch.y < self.pos[1] + self.size[1]:
-				self.resources.update_resource_by_value(strings.RESOURCE_SCIENCE, 1)
-		super(ClickButton, self).on_touch_down(touch)
-		return True
+		
