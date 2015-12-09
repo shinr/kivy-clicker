@@ -112,7 +112,7 @@ class ProgressBarLayout(BoxLayout):
 
 
 class ResourcesHandler(EventDispatcher):
-	crew = NumericProperty(0.0)
+	crew = NumericProperty(10.0)
 	score = NumericProperty(0.0)
 	dps = NumericProperty(0.0)
 	resources = {}
@@ -122,7 +122,8 @@ class ResourcesHandler(EventDispatcher):
 			strings.DEFAULT:-1,
 			strings.RESOURCE_SCIENCE:self.score,
 			strings.RESOURCE_CREW:self.crew, 
-			strings.RESOURCE_DPS:self.dps
+			strings.RESOURCE_DPS:self.dps,
+			strings.RESOURCE_SHIP_COMMAND:0
 		}
 		self.dps = 1.0
 
@@ -131,8 +132,15 @@ class ResourcesHandler(EventDispatcher):
 			return self.resources[attribute]
 		return -1
 
-	def update_resource_by_value(self, resource_key, resource_value):
+	def update_resource_by_value(self, resource_key, resource_value, *args): 
 		self.resources[resource_key] += resource_value
+
+	def move_resource_by_amount(self, move_from, move_to, amount, *args):
+		if self.resources[move_from] >= amount:
+			self.resources[move_from] -= amount
+			self.resources[move_to] += amount
+		else:
+			pass # maybe notify someone
 
 	def update(self, dt):
 		self.resources[strings.RESOURCE_SCIENCE] += self.dps * dt

@@ -23,6 +23,7 @@ class AttributeLabel(BaseLabel):
 
 	def update(self, dt):
 		self.text = self.text_mask.format(self.resources.get_attribute_by_string(self.attribute))
+		
 
 class CrewLabel(BaseLabel):
 	def __init__(self, property='default', **kwargs):
