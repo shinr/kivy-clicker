@@ -24,6 +24,13 @@ class BaseLayoutBehaviour(object):
 		widget.game_logic = self.game_logic
 		super(BaseLayoutBehaviour, self).add_widget(widget, **kwargs)
 
+class SliderLayout(BoxLayout, BaseLayoutBehaviour):
+	def __init__(self, **kwargs):
+		super(SliderLayout, self).__init__(**kwargs)
+
+	def initialize(self):
+		pass
+		
 class UpgradeList(RelativeLayout, StencilView):
 	upgrades = []
 	initializable = True
@@ -57,7 +64,7 @@ class UpgradeList(RelativeLayout, StencilView):
 
 class Upgrade(BoxLayout, StencilView):
 	price = NumericProperty(0)
-	initializable = False
+	iniitalizable = False
 	def __init__(self, **kwargs):
 		super(Upgrade, self).__init__(**kwargs)
 		
