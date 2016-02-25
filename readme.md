@@ -1,0 +1,1 @@
+A clicker game project in Kivy
