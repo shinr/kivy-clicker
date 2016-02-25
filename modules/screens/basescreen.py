@@ -1,3 +1,6 @@
+from kivy.uix.screenmanager import Screen
+from kivy.properties import ObjectProperty
+from ui.layouts.gamelayout import GameLayout
 # to set up a layout for a screen, use the initialize method
 # this could be 
 class BaseScreen(Screen):

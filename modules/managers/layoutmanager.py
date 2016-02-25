@@ -1,3 +1,9 @@
+from kivy.uix.screenmanager import ScreenManager
+from kivy.properties import ObjectProperty
+from kivy.clock import Clock
+from modules.managers.resourcemanager import ResourceManager
+from modules.controllers.gamecontroller import GameController
+# class that manages the base views
 class LayoutManager(ScreenManager):
     resources = ObjectProperty(None)
     game_logic = ObjectProperty(None)
@@ -5,8 +11,8 @@ class LayoutManager(ScreenManager):
     debug_mode = False
     def __init__(self, debug_mode=True, **kwargs):
         super(LayoutManager, self).__init__(**kwargs)
-        self.resources = ResourcesHandler()
-        self.game_logic = GameLogic(debug=debug_mode, resources=self.resources, layout_manager=self)
+        self.resources = ResourceManager()
+        self.game_logic = GameController(debug=debug_mode, resources=self.resources, layout_manager=self)
         Clock.schedule_interval(self.game_logic.update, 1.0 / 60.0)
 
     # overload for setting some new stuff

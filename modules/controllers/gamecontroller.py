@@ -1,26 +1,13 @@
-from kivy.uix.widget import Widget
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.relativelayout import RelativeLayout
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.stencilview import StencilView
-from kivy.properties import ObjectProperty, NumericProperty, StringProperty
-from kivy.vector import Vector
 from kivy.event import EventDispatcher
-from ui.buttons import BaseButton
-from ui.labels import BaseLabel
-import strings 
-import math
-import ui.layouts as layouts
-from exceptions import *
-
+from kivy.properties import ObjectProperty
 
 # all game logic happens through this class	
-class GameLogic(EventDispatcher):
+class GameController(EventDispatcher):
 	layout_manager = ObjectProperty(None)
 	resources = ObjectProperty(None)
 	debug_mode = False
 	def __init__(self, debug=False, resources=None, layout_manager=None, **kwargs):
-		super(GameLogic, self).__init__(**kwargs)
+		super(GameController, self).__init__(**kwargs)
 		self.debug_mode = debug
 		if resources is None:
 			raise ResourcesNotDefined("Resources is not defined (None)")
@@ -62,25 +49,3 @@ class GameLogic(EventDispatcher):
 
 	def reset(self, instance):
 		print ("i was reset")
-
-class ResourcesHandler(EventDispatcher):
-	crew = NumericProperty(10.0)
-	score = NumericProperty(0.0)
-	dps = NumericProperty(0.0)
-	click_power = NumericProperty(1.0)
-	resources = {}
-	def __init__(self, **kwargs):
-		super(ResourcesHandler, self).__init__(**kwargs)
-		self.resources = {
-			strings.DEFAULT:-1,
-			strings.RESOURCE_SCIENCE:self.score,
-			strings.RESOURCE_CREW:self.crew, 
-			strings.RESOURCE_DPS:self.dps,
-			strings.RESOURCE_SHIP_COMMAND:0
-		}
-		self.dps = 1.0
-
-	def update(self, dt):
-		self.resources[strings.RESOURCE_SCIENCE] += self.dps * dt
-
-				
